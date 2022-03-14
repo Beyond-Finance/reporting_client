@@ -9,6 +9,8 @@ module ReportingClient
   class Heap
     attr_accessor :event_name, :properties, :identity
 
+    HEAP_EVENT_TRACKING_URL = 'https://heapanalytics.com/api/track'
+
     def self.call(*args)
       new(*args).call
     end
@@ -25,7 +27,6 @@ module ReportingClient
         req.options[:timeout] = config.timeout
       end
       request_logger.log_response(response)
-      response.body
     rescue StandardError => e
       request_logger.log_error(e)
       raise
@@ -33,12 +34,12 @@ module ReportingClient
 
     def conn
       @conn ||= Faraday.new(
-        url: heap_event_tracking_url,
+        url: HEAP_EVENT_TRACKING_URL,
         headers: { content_type: 'application/json' }
       ) do |faraday|
         faraday.request :json
       end
-      request_logger.log_request(heap_event_tracking_url, body, http_method: :post)
+      request_logger.log_request(HEAP_EVENT_TRACKING_URL, body, http_method: :post)
 
       @conn
     end
@@ -53,10 +54,6 @@ module ReportingClient
 
     def config
       @config ||= ReportingClient.configuration
-    end
-
-    def heap_event_tracking_url
-      'https://heapanalytics.com/api/track'
     end
 
     def request_logger

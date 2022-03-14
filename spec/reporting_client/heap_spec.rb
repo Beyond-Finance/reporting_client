@@ -38,4 +38,14 @@ RSpec.describe ReportingClient::Heap do
     subject
     expect(a_request(:post, url)).to have_been_made
   end
+
+  context 'when an error occurs' do
+    before do
+      allow(Faraday).to receive(:new).and_raise(StandardError)
+    end
+
+    it 'raises an exception' do
+      expect { subject }.to raise_error(StandardError)
+    end
+  end
 end
