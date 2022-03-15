@@ -1,0 +1,11 @@
+plugins:
+  bundler-audit:
+    enabled: true
+  csslint:
+    enabled: true
+  eslint:
+    enabled: true
+  fixme:
+    enabled: true
+  stylelint:
+    enabled: true
