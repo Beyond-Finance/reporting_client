@@ -25,7 +25,6 @@ module ReportingClient
         req.options[:timeout] = config.timeout
       end
       request_logger.log_response(response)
-      response.body
     rescue StandardError => e
       request_logger.log_error(e)
       raise
