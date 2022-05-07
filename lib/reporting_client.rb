@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'reporting_client/configuration'
+require 'reporting_client/events'
 require 'reporting_client/heap'
 require 'reporting_client/version'
 
