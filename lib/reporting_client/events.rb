@@ -15,12 +15,10 @@ module ReportingClient
       end
 
       def register(event_name)
-        events = []
-        unless events.include?(event_name)
-          events << event_name
+        return if self.events.include?(event_name)
 
-          subscribe(instrumentable_name(event_name))
-        end
+        self.events << event_name
+        subscribe(instrumentable_name(event_name))
       end
 
       def subscribe(event_name)
