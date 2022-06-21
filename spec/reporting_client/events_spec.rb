@@ -17,7 +17,7 @@ RSpec.describe ReportingClient::Events do
   let(:land) { double('land') }
 
   before do
-    stub_const('::NewRelic::Agent', double(record_custom_event: nil))
+    stub_const('::NewRelic::Agent', double(add_custom_attributes: nil, record_custom_event: nil))
     allow(config).to receive(:heap_app_id).and_return(heap_app_id)
     ReportingClient::Events.register(event_name)
     allow(ReportingClient::Heap).to receive(:call).and_return('OK')
@@ -25,23 +25,27 @@ RSpec.describe ReportingClient::Events do
     allow(land).to receive(:queue_event).and_return(nil)
   end
 
-  context 'when Current not defined' do
+  context 'when no attributes defined on Current' do
     it 'sends events to heap, new relic, and land' do
       instrument
-      expect(ActiveSupport::Notifications).to have_received(:instrument).with('Test', { success: true })
-      expect(ReportingClient::Heap).to have_received(:call).with(event_name: 'Test', identity: identity, properties: { success: true })
-      expect(land).to have_received(:queue_event).with('Test', { success: true })
+      expect(ActiveSupport::Notifications).to have_received(:instrument).with('Test', a_hash_including(success: true))
+      expect(ReportingClient::Heap).to have_received(:call).with(event_name: 'Test', identity: identity, properties: a_hash_including(success: true))
+      expect(land).to have_received(:queue_event).with('Test', a_hash_including(success: true))
     end
   end
 
-  context 'when Current defined' do
-    before { stub_const('Current', double(attributes: { id: '1234' })) }
+  context 'when attributes on Current defined and populated' do
+    let(:id) { '1234' }
+    before do
+      ReportingClient::Current.attribute :id
+      ReportingClient::Current.id = id
+    end
 
     it 'sends events to heap, land, and new relic' do
       instrument
-      expect(ActiveSupport::Notifications).to have_received(:instrument).with('Test', { success: true, id: '1234' })
-      expect(ReportingClient::Heap).to have_received(:call).with(event_name: 'Test', identity: identity, properties: { success: true, id: '1234' })
-      expect(land).to have_received(:queue_event).with('Test', { success: true, id: '1234' })
+      expect(ActiveSupport::Notifications).to have_received(:instrument).with('Test', a_hash_including(success: true, id: id))
+      expect(ReportingClient::Heap).to have_received(:call).with(event_name: 'Test', identity: identity, properties: a_hash_including(success: true, id: id))
+      expect(land).to have_received(:queue_event).with('Test', a_hash_including(success: true, id: id))
     end
 
     context 'when land is not present' do
@@ -49,8 +53,8 @@ RSpec.describe ReportingClient::Events do
 
       it 'sends events to heap and new relic' do
         instrument
-        expect(ActiveSupport::Notifications).to have_received(:instrument).with('Test', { success: true, id: '1234' })
-        expect(ReportingClient::Heap).to have_received(:call).with(event_name: 'Test', identity: identity, properties: { success: true, id: '1234' })
+        expect(ActiveSupport::Notifications).to have_received(:instrument).with('Test', a_hash_including(success: true, id: id))
+        expect(ReportingClient::Heap).to have_received(:call).with(event_name: 'Test', identity: identity, properties: a_hash_including(success: true, id: id))
         expect(land).to_not have_received(:queue_event)
       end
     end
@@ -60,8 +64,8 @@ RSpec.describe ReportingClient::Events do
 
       it 'sends events to land and  new relic' do
         instrument
-        expect(ActiveSupport::Notifications).to have_received(:instrument).with('Test', { success: true, id: '1234' })
-        expect(land).to have_received(:queue_event).with('Test', { success: true, id: '1234' })
+        expect(ActiveSupport::Notifications).to have_received(:instrument).with('Test', a_hash_including(success: true, id: '1234'))
+        expect(land).to have_received(:queue_event).with('Test', a_hash_including(success: true, id: '1234'))
         expect(ReportingClient::Heap).to_not have_received(:call)
       end
     end
