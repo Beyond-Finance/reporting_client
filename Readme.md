@@ -19,6 +19,16 @@ Or, install it yourself:
 Install the gem's initializer template to `config/initializers/reporting_client.rb` by running
   $ bin/rails g reporting_client:install
 
+### Configure ReportingClient::Current
+
+Reporting client implements a subclass of [ActiveSupport::CurrentAttributes](https://api.rubyonrails.org/classes/ActiveSupport/CurrentAttributes.html) for consumers to use, with `NewRelic` and, optionally, `RequestStore` tracking.
+
+Within the initializer, provide a list of symbols to `ReportingClient::Current.attribute` for attributes you intend to populate and track to `NewRelic`, which will automatically be included in the event reporting.
+
+Provide another list of symbols to `ReportingClient::Current.attribute_with_request_store` for attributes you with to send to both `NewRelic` and put in `RequestStore`.
+
+The installer will also create a controller concern and include it in the `ApplicationController` for your application; each consumer needs to populate the values for the configured keys in this concern.
+
 ## Usage
 
 Sends custom events to Heap, New Relic, and Land (a clickstream tracker for Rails applications).
@@ -35,9 +45,8 @@ Heap: A heap app id is required to be set up through configuration. Identity is 
 
 Land: If a land event is not application to your application do not include the class instance and events will not be send to land.
 
-## Optional Attribute Tracking
-Use ActiveSupport::CurrentAttributes for per-request tracking of dimensions. Refer to this [documentation]( https://api.rubyonrails.org/classes/ActiveSupport/CurrentAttributes.html) for help in setting up ActiveSupport::CurrentAttributes in your application.
-
+## Attribute Tracking
+For per-request tracking of dimensions, set the attribute hash for the `ReportingClient::Current` object in the `app/controllers/concerns/reporting_client/set_current.rb` concern created by the installer. Each key in the hash must be included in the initializer for the gem as described above. For any key populated, value will be pushed to reporting endpoints automatically when making use of the `ReportingClient::Events` module.
 
 ## Server-side Heap Events
 Tracking web custom events server side.
