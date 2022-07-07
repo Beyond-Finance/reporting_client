@@ -5,6 +5,7 @@ require 'simplecov'
 SimpleCov.start 'rails' do
   add_filter '/spec'
   add_filter '/lib/reporting_client/version'
+  add_filter '/lib/generators'
 end
 
 require 'bundler/setup'
