@@ -9,12 +9,12 @@ references:
       RAILS_ENV: test
       COVERAGE: true
       TZ: /usr/share/zoneinfo/America/Chicago
-      CC_TEST_REPORTER_ID: 
+      CC_TEST_REPORTER_ID: 6398911f5203cefe555fb7cc2a7cbbef5664d5a282f014a4f5cd388aa4670345
 
 jobs:
   build:
     environment:
-      CC_TEST_REPORTER_ID: 
+      CC_TEST_REPORTER_ID: 6398911f5203cefe555fb7cc2a7cbbef5664d5a282f014a4f5cd388aa4670345
     working_directory: ~/reporting_client/reporting_client_index
     docker:
       - *default_docker_ruby_executor
