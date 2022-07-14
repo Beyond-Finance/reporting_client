@@ -20,7 +20,7 @@ module ReportingClient
       def add_controller_concern
         return if options[:skip_current_controller_concern]
 
-        insert_into_file 'app/controllers/application_controller.rb', "  include ReportingClient::SetCurrent\n", after: /class ApplicationController.*\n/
+        insert_into_file 'app/controllers/application_controller.rb', "  include ReportingClient::SetCurrent\n", after: %r{class ApplicationController.*\n}
         template 'controllers/concerns/set_current.rb', 'app/controllers/concerns/reporting_client/set_current.rb'
       end
 
