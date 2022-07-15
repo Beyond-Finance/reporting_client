@@ -11,3 +11,9 @@ end
 
 # ReportingClient::Current.attribute :attr1, :attr2, ...
 # ReportingClient::Current.attribute_with_request_store :attr3, :attr4, ...
+
+# ActiveSupport::Notifications.subscribe(event_name) do |name, _start, _finish, _id, payload|
+#   payload.merge!(Current.attributes.compact) if defined?(Current) && Current.attributes.present?
+
+#   ::NewRelic::Agent.record_custom_event(name.to_s, payload)
+# end
