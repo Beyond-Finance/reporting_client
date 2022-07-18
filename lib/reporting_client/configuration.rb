@@ -2,13 +2,14 @@
 
 module ReportingClient
   class Configuration
-    attr_accessor :environment, :heap_app_id, :timeout, :request_logger
+    attr_accessor :environment, :heap_app_id, :instrumentable_name, :timeout, :request_logger
 
     def initialize
-      @heap_app_id = nil
-      @timeout = nil
       @environment = nil
+      @heap_app_id = nil
+      @instrumentable_name = nil
       @request_logger = 'NoopLogger'
+      @timeout = nil
     end
   end
 end

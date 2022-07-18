@@ -31,12 +31,14 @@ The installer will also create a controller concern and include it in the `Appli
 
 ## Usage
 
+# Multiple Event Names
+
 Sends custom events to Heap, New Relic, and Land (a clickstream tracker for Rails applications).
 
 ```ruby
-    ReportingClient::Event.register(<event_name>)
-    event = ReportingClient::Event.new(event_name: <event_name-required>, heap_identity: <heap_identity-optional>, land: @land-optional )
-    event.send(<event_name-required>, { success: <boolean-required>, fail_reason: <string-optional>, meta: <additional attributes-optional> })
+    ReportingClient::Events.register(<event_name>)
+    event = ReportingClient::Events.new(event_name: <event_name-required>, heap_identity: <heap_identity-optional>, land: @land-optional )
+    event.instrument(<event_name-required>, { success: <boolean-required>, fail_reason: <string-optional>, meta: <additional attributes-optional> })
 ```
 
 Naming Events: New Relic requires event names to be camelcase so the gem will automatically change any event name to a string that is camelcase. For consistenty, this naming convention is carried over for all events no matter the APM tool.
@@ -44,6 +46,25 @@ Naming Events: New Relic requires event names to be camelcase so the gem will au
 Heap: A heap app id is required to be set up through configuration. Identity is also required to send a server side heap event. If heap is not applicable for your application, do not send an identity and no heap events will be sent.
 
 Land: If a land event is not application to your application do not include the class instance and events will not be send to land.
+
+# Single Event Name
+
+In your applications intializer, set the desired event name for your application in `instrumentable_name`. To send a custom event use:
+
+```ruby
+    event = ReportingClient::Event.new(heap_identity: <heap_identity-optional>, land: @land-optional )
+    event.instrument(success: <boolean-required>, fail_reason: <string-optional>, meta: <additional attributes-optional>)
+```
+
+Within the initializer, the following code is needed:
+
+```ruby
+  ActiveSupport::Notifications.subscribe(ReportingClient.configuration.instrumentable_name) do |name, _start, _finish, _id, payload|
+     payload.merge!(Current.attributes.compact) if defined?(Current) && Current.attributes.present?
+  
+    ::NewRelic::Agent.record_custom_event(name.to_s, payload)
+  end
+```
 
 ## Attribute Tracking
 For per-request tracking of dimensions, set the attribute hash for the `ReportingClient::Current` object in the `app/controllers/concerns/reporting_client/set_current.rb` concern created by the installer. Each key in the hash must be included in the initializer for the gem as described above. For any key populated, value will be pushed to reporting endpoints automatically when making use of the `ReportingClient::Events` module.

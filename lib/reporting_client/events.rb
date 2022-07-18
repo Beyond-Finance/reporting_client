@@ -3,11 +3,13 @@
 require 'active_support'
 require 'rubygems'
 
+require_relative 'event'
+
 module ReportingClient
-  class Events
+  class Events < Event
     cattr_accessor :events, default: []
 
-    attr_reader :event_name, :heap_identity, :land
+    attr_reader :event_name
 
     class << self
       def instrumentable_name(event_name)
@@ -31,31 +33,14 @@ module ReportingClient
     end
 
     def initialize(event_name:, heap_identity: nil, land: nil)
+      super(heap_identity: heap_identity, land: land)
       @event_name = event_name
-      @heap_identity = heap_identity
-      @land = land
-    end
-
-    def instrument(success:, fail_reason: nil, meta: {})
-      data = { success: success }
-      data.merge!(fail_reason: fail_reason) if fail_reason.present?
-      data.merge!(meta) if meta.present?
-      send_event(data)
     end
 
     private
 
     def instrumentable_name
       @instrumentable_name ||= self.class.instrumentable_name(event_name)
-    end
-
-    def send_event(data)
-      data.merge! Current.attributes if defined?(Current) && Current.attributes.present?
-
-      ActiveSupport::Notifications.instrument(instrumentable_name, data)
-
-      Heap.call(identity: heap_identity, event_name: instrumentable_name, properties: data) if heap_identity.present?
-      land.queue_event(instrumentable_name, data) if land.present?
     end
   end
 end
