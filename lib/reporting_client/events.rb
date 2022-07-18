@@ -30,7 +30,7 @@ module ReportingClient
       end
     end
 
-    def initialize(event_name:, heap_identity: nil, land: nil)
+    def initialize(event_name: nil, heap_identity: nil, land: nil)
       @event_name = event_name
       @heap_identity = heap_identity
       @land = land

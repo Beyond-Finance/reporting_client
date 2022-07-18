@@ -49,11 +49,21 @@ Land: If a land event is not application to your application do not include the 
 
 # Single Event Name
 
-In your applications intializer, set the desired event name for your application in `instrumentable_name`. Send a custom event
+In your applications intializer, set the desired event name for your application in `instrumentable_name`. To send a custom event use:
 
 ```ruby
     event = ReportingClient::Event.new(heap_identity: <heap_identity-optional>, land: @land-optional )
     event.instrument(success: <boolean-required>, fail_reason: <string-optional>, meta: <additional attributes-optional>)
+```
+
+Within the initializer, the following code is needed:
+
+```ruby
+  ActiveSupport::Notifications.subscribe(ReportingClient.configuration.instrumentable_name) do |name, _start, _finish, _id, payload|
+     payload.merge!(Current.attributes.compact) if defined?(Current) && Current.attributes.present?
+  
+    ::NewRelic::Agent.record_custom_event(name.to_s, payload)
+  end
 ```
 
 ## Attribute Tracking
