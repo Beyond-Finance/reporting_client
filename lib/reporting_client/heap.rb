@@ -11,8 +11,8 @@ module ReportingClient
 
     HEAP_EVENT_TRACKING_URL = 'https://heapanalytics.com/api/track'
 
-    def self.call(*args)
-      new(*args).call
+    def self.call(**args)
+      new(**args).call
     end
 
     def initialize(event_name:, identity:, properties:)
