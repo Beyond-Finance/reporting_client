@@ -26,5 +26,9 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
 
+  config.mock_with :rspec do |mocks|
+    mocks.allow_message_expectations_on_nil = true
+  end
+
   WebMock.disable_net_connect!
 end

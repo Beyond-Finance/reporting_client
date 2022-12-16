@@ -44,7 +44,7 @@ RSpec.describe ReportingClient::Events do
     end
 
     context 'when no attributes defined on Current' do
-      before { event.instrument(data) }
+      before { event.instrument(success: true) }
 
       it 'sends events to heap, new relic, and land' do
         expect(ActiveSupport::Notifications).to have_received(:instrument).with('Test', a_hash_including(success: true))
@@ -58,7 +58,7 @@ RSpec.describe ReportingClient::Events do
       before do
         ReportingClient::Current.attribute :id
         ReportingClient::Current.id = id
-        event.instrument(data)
+        event.instrument(success: true)
       end
 
       it 'sends events to heap, land, and new relic' do
