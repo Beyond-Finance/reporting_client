@@ -37,5 +37,21 @@ RSpec.describe ReportingClient::Configuration do
     it 'includes request logger' do
       expect(subject.request_logger).to eq(configuration_params[:request_logger])
     end
+
+    it 'defaults raises_on_unsupported_event to false' do
+      expect(subject.raises_on_unsupported_event).to be false
+    end
+
+    context 'a value is passed for raises_on_unsupported_event' do
+      before do
+        ReportingClient.configure do |config|
+          config.raises_on_unsupported_event = true
+        end
+      end
+
+      it 'includes raises_on_unsupported_event' do
+        expect(subject.raises_on_unsupported_event).to be true
+      end
+    end
   end
 end
