@@ -87,6 +87,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
+            - reporting_client-{{ checksum "Gemfile.lock" }}
             - reporting_client-{{ checksum "reporting_client.gemspec" }}
             - reporting_client-
       - run:
