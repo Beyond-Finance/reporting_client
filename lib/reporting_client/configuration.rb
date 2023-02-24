@@ -3,7 +3,7 @@
 module ReportingClient
   class Configuration
     attr_accessor :environment, :heap_app_id, :instrumentable_name, :timeout, :request_logger,
-                  :prefix_event_names
+                  :prefix_new_relic_names
 
     def initialize
       @environment = nil
@@ -11,7 +11,7 @@ module ReportingClient
       @instrumentable_name = nil
       @request_logger = 'NoopLogger'
       @timeout = nil
-      @prefix_event_names = false
+      @prefix_new_relic_names = false
     end
   end
 end
