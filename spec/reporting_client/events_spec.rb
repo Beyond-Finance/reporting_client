@@ -97,6 +97,7 @@ RSpec.describe ReportingClient::Events do
       before do
         ReportingClient::Current.attribute :id
         ReportingClient::Current.id = id
+
         event.instrument(success: true)
       end
 
@@ -124,6 +125,24 @@ RSpec.describe ReportingClient::Events do
           expect(land).to have_received(:queue_event).with('Test', a_hash_including(success: true, id: '1234'))
           expect(ReportingClient::Heap).to_not have_received(:call)
         end
+      end
+    end
+
+    context 'when configured to prefix new relic names' do
+      before do
+        ReportingClient.configuration.prefix_new_relic_names = true
+        ReportingClient.configuration.instrumentable_name = 'Prefix'
+
+        event.instrument(success: true)
+      end
+
+      after do
+        ReportingClient.configuration.prefix_new_relic_names = false
+        ReportingClient.configuration.instrumentable_name = nil
+      end
+
+      it 'sends prefixes the New Relic event name' do
+        expect(NewRelic::Agent).to have_received(:record_custom_event).with('Prefix_Test', a_hash_including(success: true))
       end
     end
   end
