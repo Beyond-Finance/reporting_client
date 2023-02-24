@@ -37,5 +37,21 @@ RSpec.describe ReportingClient::Configuration do
     it 'includes request logger' do
       expect(subject.request_logger).to eq(configuration_params[:request_logger])
     end
+
+    it 'defaults prefix_event_names to false' do
+      expect(subject.prefix_event_names).to be false
+    end
+
+    context 'a value is passed for prefix_event_names' do
+      before do
+        ReportingClient.configure do |config|
+          config.prefix_event_names = true
+        end
+      end
+
+      it 'includes raises_on_unsupported_event' do
+        expect(subject.prefix_event_names).to be true
+      end
+    end
   end
 end
