@@ -33,7 +33,7 @@ module ReportingClient
     end
 
     def initialize(event_name:, heap_identity: nil, land: nil)
-      raise ReportingClient::UnregisteredEventError, event_name if raises_unsupported && !events.include?(event_name)
+      raise ReportingClient::Exceptions::UnregisteredEventError, event_name if raises_unsupported && !events.include?(event_name)
 
       super(heap_identity: heap_identity, land: land)
       @event_name = event_name

@@ -24,7 +24,7 @@ RSpec.describe ReportingClient::Events do
 
       context 'if an unregistered is created' do
         it 'raises UnregisteredEventError' do
-          expect { subject }.to raise_error(ReportingClient::UnregisteredEventError)
+          expect { subject }.to raise_error(ReportingClient::Exceptions::UnregisteredEventError)
         end
       end
 
@@ -32,14 +32,14 @@ RSpec.describe ReportingClient::Events do
         before { described_class.register(event_name) }
 
         it "doesn't raise" do
-          expect { subject }.not_to raise_error(ReportingClient::UnregisteredEventError)
+          expect { subject }.not_to raise_error(ReportingClient::Exceptions::UnregisteredEventError)
         end
       end
     end
 
     context 'when configured to not raise on unsupported event creation' do
       it "doesn't raise even if the created event is unregistered" do
-        expect { subject }.not_to raise_error(ReportingClient::UnregisteredEventError)
+        expect { subject }.not_to raise_error(ReportingClient::Exceptions::UnregisteredEventError)
       end
     end
   end

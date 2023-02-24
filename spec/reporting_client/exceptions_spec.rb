@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ReportingClient::UnregisteredEventError do
+RSpec.describe ReportingClient::Exceptions::UnregisteredEventError do
   let(:event_name) { 'TestEvent' }
 
   describe '#message' do

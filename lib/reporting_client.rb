@@ -2,7 +2,7 @@
 
 require 'reporting_client/configuration'
 require 'reporting_client/current'
-require 'reporting_client/errors'
+require 'reporting_client/exceptions'
 require 'reporting_client/event'
 require 'reporting_client/events'
 require 'reporting_client/heap'
