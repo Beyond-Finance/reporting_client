@@ -87,5 +87,18 @@ RSpec.describe ReportingClient::Events do
         end
       end
     end
+
+    context 'when configured to prefix new relic names' do
+      before do
+        ReportingClient.configuration.prefix_new_relic_names = true
+        ReportingClient.configuration.instrumentable_name = 'Prefix'
+
+        event.instrument(success: true)
+      end
+
+      it 'sends prefixes the New Relic event name' do
+        expect(NewRelic::Agent).to have_received(:record_custom_event).with('Prefix_Test', a_hash_including(success: true))
+      end
+    end
   end
 end
