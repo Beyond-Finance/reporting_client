@@ -58,6 +58,7 @@ RSpec.describe ReportingClient::Events do
       before do
         ReportingClient::Current.attribute :id
         ReportingClient::Current.id = id
+
         event.instrument(success: true)
       end
 
@@ -94,6 +95,11 @@ RSpec.describe ReportingClient::Events do
         ReportingClient.configuration.instrumentable_name = 'Prefix'
 
         event.instrument(success: true)
+      end
+
+      after do
+        ReportingClient.configuration.prefix_new_relic_names = false
+        ReportingClient.configuration.instrumentable_name = nil
       end
 
       it 'sends prefixes the New Relic event name' do

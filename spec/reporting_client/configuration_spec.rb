@@ -49,6 +49,12 @@ RSpec.describe ReportingClient::Configuration do
         end
       end
 
+      after do
+        ReportingClient.configure do |config|
+          config.prefix_new_relic_names = false
+        end
+      end
+
       it 'includes raises_on_unsupported_event' do
         expect(subject.prefix_new_relic_names).to be true
       end
