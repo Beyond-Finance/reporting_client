@@ -8,12 +8,51 @@ require 'active_support/core_ext'
 RSpec.describe ReportingClient::Events do
   before { stub_const('::NewRelic::Agent', double(add_custom_attributes: nil, record_custom_event: nil)) }
 
+  describe 'initialize' do
+    subject { described_class.new(event_name: event_name) }
+
+    let(:event_name) { 'Event' }
+
+    context 'when configured to raise on unsupported event creation' do
+      before do
+        ReportingClient.configuration.raises_on_unsupported_event = true
+      end
+
+      after do
+        ReportingClient.configuration.raises_on_unsupported_event = true
+      end
+
+      context 'if an unregistered is created' do
+        it 'raises UnregisteredEventError' do
+          expect { subject }.to raise_error(ReportingClient::Exceptions::UnregisteredEventError)
+        end
+      end
+
+      context 'if a registered event is created' do
+        before { described_class.register(event_name) }
+
+        it "doesn't raise" do
+          expect { subject }.not_to raise_error(ReportingClient::Exceptions::UnregisteredEventError)
+        end
+      end
+    end
+
+    context 'when configured to not raise on unsupported event creation' do
+      it "doesn't raise even if the created event is unregistered" do
+        expect { subject }.not_to raise_error(ReportingClient::Exceptions::UnregisteredEventError)
+      end
+    end
+  end
+
   describe '.register' do
     let(:event1) { Faker::Lorem.unique.word.downcase }
     let(:event2) { Faker::Lorem.unique.word.downcase }
     let(:event3) { Faker::Lorem.unique.word.downcase }
     subject { described_class.events }
+
     before do
+      described_class.events = []
+
       described_class.register event1
       described_class.register event2
       described_class.register event3
