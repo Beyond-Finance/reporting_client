@@ -13,9 +13,6 @@ module ReportingClient
         In order to register an event type, call `ReportingClient::Events.register(your_event_name)`.
         This action is idemptotent, and it can be run multiple times for safety. You can disable
         this error by configuring `raises_on_unsupported_event` to be false.
-
-        NOTE: This error will not be raised when running in production environments, regardless
-        of configuration.
       MESSAGE
 
       def initialize(event_name, message = ERROR_MESSAGE)
