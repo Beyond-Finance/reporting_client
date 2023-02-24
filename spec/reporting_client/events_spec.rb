@@ -18,6 +18,10 @@ RSpec.describe ReportingClient::Events do
         ReportingClient.configuration.raises_on_unsupported_event = true
       end
 
+      after do
+        ReportingClient.configuration.raises_on_unsupported_event = true
+      end
+
       context 'if an unregistered is created' do
         it 'raises UnregisteredEventError' do
           expect { subject }.to raise_error(ReportingClient::UnregisteredEventError)

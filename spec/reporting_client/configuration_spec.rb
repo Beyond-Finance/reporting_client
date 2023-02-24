@@ -49,6 +49,12 @@ RSpec.describe ReportingClient::Configuration do
         end
       end
 
+      after do
+        ReportingClient.configure do |config|
+          config.raises_on_unsupported_event = true
+        end
+      end
+
       it 'includes raises_on_unsupported_event' do
         expect(subject.raises_on_unsupported_event).to be true
       end
