@@ -27,12 +27,21 @@ module ReportingClient
         ActiveSupport::Notifications.subscribe(event_name) do |name, _start, _finish, _id, payload|
           payload.merge!(Current.attributes.compact) if defined?(Current) && Current.attributes.present?
 
+          name.to_s.prepend(config.instrumentable_name, '_') if config.prefix_new_relic_names
           ::NewRelic::Agent.record_custom_event(name.to_s, payload)
         end
+      end
+
+      private
+
+      def config
+        @config ||= ReportingClient.configuration
       end
     end
 
     def initialize(event_name:, heap_identity: nil, land: nil)
+      raise ReportingClient::Exceptions::UnregisteredEventError, event_name if raises_unsupported && !events.include?(event_name)
+
       super(heap_identity: heap_identity, land: land)
       @event_name = event_name
     end
@@ -41,6 +50,10 @@ module ReportingClient
 
     def instrumentable_name
       @instrumentable_name ||= self.class.instrumentable_name(event_name)
+    end
+
+    def raises_unsupported
+      @raises_unsupported ||= ReportingClient.configuration.raises_on_unsupported_event
     end
   end
 end

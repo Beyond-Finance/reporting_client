@@ -37,5 +37,49 @@ RSpec.describe ReportingClient::Configuration do
     it 'includes request logger' do
       expect(subject.request_logger).to eq(configuration_params[:request_logger])
     end
+
+    it 'defaults prefix_new_relic_names to false' do
+      expect(subject.prefix_new_relic_names).to be false
+    end
+
+    it 'defaults raises_on_unsupported_event to false' do
+      expect(subject.raises_on_unsupported_event).to be false
+    end
+
+    context 'a value is passed for prefix_new_relic_names' do
+      before do
+        ReportingClient.configure do |config|
+          config.prefix_new_relic_names = true
+        end
+      end
+
+      after do
+        ReportingClient.configure do |config|
+          config.prefix_new_relic_names = false
+        end
+      end
+
+      it 'includes prefix_new_relic_names' do
+        expect(subject.prefix_new_relic_names).to be true
+      end
+    end
+
+    context 'a value is passed for raises_on_unsupported_event' do
+      before do
+        ReportingClient.configure do |config|
+          config.raises_on_unsupported_event = true
+        end
+      end
+
+      after do
+        ReportingClient.configure do |config|
+          config.raises_on_unsupported_event = true
+        end
+      end
+
+      it 'includes raises_on_unsupported_event' do
+        expect(subject.raises_on_unsupported_event).to be true
+      end
+    end
   end
 end

@@ -8,12 +8,51 @@ require 'active_support/core_ext'
 RSpec.describe ReportingClient::Events do
   before { stub_const('::NewRelic::Agent', double(add_custom_attributes: nil, record_custom_event: nil)) }
 
+  describe 'initialize' do
+    subject { described_class.new(event_name: event_name) }
+
+    let(:event_name) { 'Event' }
+
+    context 'when configured to raise on unsupported event creation' do
+      before do
+        ReportingClient.configuration.raises_on_unsupported_event = true
+      end
+
+      after do
+        ReportingClient.configuration.raises_on_unsupported_event = true
+      end
+
+      context 'if an unregistered is created' do
+        it 'raises UnregisteredEventError' do
+          expect { subject }.to raise_error(ReportingClient::Exceptions::UnregisteredEventError)
+        end
+      end
+
+      context 'if a registered event is created' do
+        before { described_class.register(event_name) }
+
+        it "doesn't raise" do
+          expect { subject }.not_to raise_error(ReportingClient::Exceptions::UnregisteredEventError)
+        end
+      end
+    end
+
+    context 'when configured to not raise on unsupported event creation' do
+      it "doesn't raise even if the created event is unregistered" do
+        expect { subject }.not_to raise_error(ReportingClient::Exceptions::UnregisteredEventError)
+      end
+    end
+  end
+
   describe '.register' do
     let(:event1) { Faker::Lorem.unique.word.downcase }
     let(:event2) { Faker::Lorem.unique.word.downcase }
     let(:event3) { Faker::Lorem.unique.word.downcase }
     subject { described_class.events }
+
     before do
+      described_class.events = []
+
       described_class.register event1
       described_class.register event2
       described_class.register event3
@@ -58,6 +97,7 @@ RSpec.describe ReportingClient::Events do
       before do
         ReportingClient::Current.attribute :id
         ReportingClient::Current.id = id
+
         event.instrument(success: true)
       end
 
@@ -85,6 +125,24 @@ RSpec.describe ReportingClient::Events do
           expect(land).to have_received(:queue_event).with('Test', a_hash_including(success: true, id: '1234'))
           expect(ReportingClient::Heap).to_not have_received(:call)
         end
+      end
+    end
+
+    context 'when configured to prefix new relic names' do
+      before do
+        ReportingClient.configuration.prefix_new_relic_names = true
+        ReportingClient.configuration.instrumentable_name = 'Prefix'
+
+        event.instrument(success: true)
+      end
+
+      after do
+        ReportingClient.configuration.prefix_new_relic_names = false
+        ReportingClient.configuration.instrumentable_name = nil
+      end
+
+      it 'sends prefixes the New Relic event name' do
+        expect(NewRelic::Agent).to have_received(:record_custom_event).with('Prefix_Test', a_hash_including(success: true))
       end
     end
   end
