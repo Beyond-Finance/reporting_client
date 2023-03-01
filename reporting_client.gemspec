@@ -30,8 +30,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'simplecov'
   spec.add_development_dependency 'webmock'
 
-  spec.add_runtime_dependency 'faraday'
-  spec.add_runtime_dependency 'faraday_middleware'
+  spec.add_runtime_dependency 'faraday', '>= 2.0'
   spec.add_runtime_dependency 'request_store'
   spec.metadata['rubygems_mfa_required'] = 'true'
 end
