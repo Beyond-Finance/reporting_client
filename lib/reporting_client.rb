@@ -6,6 +6,7 @@ require 'reporting_client/exceptions'
 require 'reporting_client/event'
 require 'reporting_client/events'
 require 'reporting_client/heap'
+require 'reporting_client/dsl'
 require 'reporting_client/version'
 
 module ReportingClient
