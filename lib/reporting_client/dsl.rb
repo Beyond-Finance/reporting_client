@@ -10,6 +10,7 @@ module ReportingClient
       yield
     rescue StandardError => e
       event.instrument(success: false, fail_reason: e.message, meta: meta)
+      raise e
     end
   end
 end

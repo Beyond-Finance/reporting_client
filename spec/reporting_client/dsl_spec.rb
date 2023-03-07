@@ -76,8 +76,8 @@ RSpec.describe ReportingClient::DSL do
   describe '#report_uncaught_errors' do
     context 'when no error is raised' do
       context 'when no block is given' do
-        it 'returns nil' do
-          expect(Foo.new.error_method).to be_nil
+        it 'raieses LocalJumpError' do
+          expect { Foo.new.error_method }.to raise_error(LocalJumpError)
         end
       end
 
@@ -101,7 +101,7 @@ RSpec.describe ReportingClient::DSL do
 
       context 'when the meta is a variable' do
         it 'instruments with the meta' do
-          Foo.new.method_b
+          expect { Foo.new.method_b }.to raise_error(StandardError)
 
           expect(event).to have_received(:instrument).with(instrument_hash)
         end
@@ -109,7 +109,7 @@ RSpec.describe ReportingClient::DSL do
 
       context 'when the meta is a symbol' do
         it 'instruments the meta by sending the symbol' do
-          Foo.new.method_c
+          expect { Foo.new.method_c }.to raise_error(StandardError)
 
           expect(event).to have_received(:instrument).with(instrument_hash)
         end
@@ -122,7 +122,7 @@ RSpec.describe ReportingClient::DSL do
           let(:meta) { { bat: :value_a } }
 
           it "doesn't update the value" do
-            Foo.new.method_d
+            expect { Foo.new.method_d }.to raise_error(StandardError)
 
             expect(event).to have_received(:instrument).with(instrument_hash)
           end
@@ -132,7 +132,7 @@ RSpec.describe ReportingClient::DSL do
           let(:meta) { { bat: :value_b } }
 
           it 'does update the value' do
-            Foo.new.method_e
+            expect { Foo.new.method_e }.to raise_error(StandardError)
 
             expect(event).to have_received(:instrument).with(instrument_hash)
           end
@@ -142,7 +142,7 @@ RSpec.describe ReportingClient::DSL do
           let(:meta) { { bat: :value_a } }
 
           it 'does update the value' do
-            Foo.new.method_f
+            expect { Foo.new.method_f }.to raise_error(StandardError)
 
             expect(event).to have_received(:instrument).with(instrument_hash)
           end
