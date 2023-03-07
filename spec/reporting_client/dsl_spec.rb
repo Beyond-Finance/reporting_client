@@ -139,7 +139,7 @@ RSpec.describe ReportingClient::DSL do
         end
 
         context 'when the meta is a symbol' do
-          let(:meta) { { bat: :value_a } }
+          let(:meta) { { bat: :value_b } }
 
           it 'does update the value' do
             expect { Foo.new.method_f }.to raise_error(StandardError)

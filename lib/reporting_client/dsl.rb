@@ -5,11 +5,11 @@ module ReportingClient
     private
 
     def report_uncaught_errors(event:, meta:)
-      meta = send(meta) if meta.is_a? Symbol
-
       yield
     rescue StandardError => e
+      meta = send(meta) if meta.is_a? Symbol
       event.instrument(success: false, fail_reason: e.message, meta: meta)
+
       raise e
     end
   end
