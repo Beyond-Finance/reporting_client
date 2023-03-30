@@ -27,7 +27,7 @@ module ReportingClient
         ActiveSupport::Notifications.subscribe(event_name) do |name, _start, _finish, _id, payload|
           payload.merge!(Current.attributes.compact) if defined?(Current) && Current.attributes.present?
 
-          name = "#{config.instrumentable_name}_" + name.to_s if config.prefix_new_relic_names
+          name = "#{config.instrumentable_name}_#{name.to_s}" if config.prefix_new_relic_names
           ::NewRelic::Agent.record_custom_event(name.to_s, payload)
         end
       end
