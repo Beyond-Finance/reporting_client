@@ -47,4 +47,24 @@ RSpec.describe ReportingClient::Heap do
       expect { subject }.to raise_error(StandardError)
     end
   end
+
+  context 'with heap async set to true' do
+    it 'enqueues a heap job' do
+      allow(config).to receive(:heap_async).and_return(true)
+
+      expect(ReportingClient::HeapJob).to receive(:perform_later).with(event_name, program_name, properties)
+      expect(Faraday).not_to receive(:new)
+      subject
+    end
+  end
+
+  context 'with heap async set to false' do
+    it 'does not enqueue a heap job' do
+      allow(config).to receive(:heap_async).and_return(false)
+
+      expect(ReportingClient::HeapJob).not_to receive(:perform_later)
+      expect(Faraday).to receive(:new).and_return(double(post: true))
+      subject
+    end
+  end
 end
