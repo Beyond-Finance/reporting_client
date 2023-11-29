@@ -3,7 +3,7 @@
 module ReportingClient
   class Configuration
     attr_accessor :environment, :heap_app_id, :instrumentable_name, :timeout, :request_logger,
-                  :prefix_new_relic_names, :raises_on_unsupported_event, :heap_async, :heap_async_proc
+                  :prefix_new_relic_names, :raises_on_unsupported_event, :heap_async
 
     def initialize
       @environment = nil
