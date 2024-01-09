@@ -14,7 +14,7 @@ class ExceptionSerializer < ActiveJob::Serializers::ObjectSerializer
       'backtrace_locations' => exception.respond_to?(:backtrace_locations) ? exception.backtrace_locations : nil,
       'backtrace' => exception.backtrace,
       'cause' => exception.cause,
-      'exception' => exception.respond_to?(:exception) ? exception.exception : nil,
+      'exception' => exception.respond_to?(:exception) ? exception.exception : nil
     }.compact_blank
   end
 
