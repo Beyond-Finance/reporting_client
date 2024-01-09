@@ -48,7 +48,7 @@ jobs:
       - run:
           name: Bundle Install
           command: |
-            gem install bundler
+            gem install bundler -v 2.4.22
             bundle check || bundle install
       - run:
           name: Install Code Climate Test Reporter
@@ -92,7 +92,7 @@ jobs:
       - run:
           name: Bundle Install
           command: |
-            gem install bundler
+            gem install bundler -v 2.4.22
             bundle check || bundle install
       - run:
           name: rubocop
