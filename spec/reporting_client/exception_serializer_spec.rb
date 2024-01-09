@@ -12,4 +12,8 @@ RSpec.describe ExceptionSerializer do
     serialized_error = ExceptionSerializer.serialize(error)
     expect(ExceptionSerializer.deserialize(serialized_error).message).to eq('test')
   end
+
+  it 'validates that the argument is a StandardError' do
+    expect(ExceptionSerializer.serialize?(error)).to eq(true)
+  end
 end
