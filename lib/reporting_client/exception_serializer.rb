@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module ReportingClient
-
   class ExceptionSerializer < ActiveJob::Serializers::ObjectSerializer
     def serialize?(argument)
       argument.is_a?(StandardError)
