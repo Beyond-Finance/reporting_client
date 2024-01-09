@@ -8,7 +8,7 @@ require 'active_support/core_ext'
 RSpec.describe ReportingClient::Events do
   before { stub_const('::NewRelic::Agent', double(add_custom_attributes: nil, record_custom_event: nil)) }
 
-  describe 'initialize' do
+  describe '.initialize' do
     subject { described_class.new(event_name: event_name) }
 
     let(:event_name) { 'Event' }
@@ -32,14 +32,14 @@ RSpec.describe ReportingClient::Events do
         before { described_class.register(event_name) }
 
         it "doesn't raise" do
-          expect { subject }.not_to raise_error(ReportingClient::Exceptions::UnregisteredEventError)
+          expect { subject }.not_to raise_error
         end
       end
     end
 
     context 'when configured to not raise on unsupported event creation' do
       it "doesn't raise even if the created event is unregistered" do
-        expect { subject }.not_to raise_error(ReportingClient::Exceptions::UnregisteredEventError)
+        expect { subject }.not_to raise_error
       end
     end
   end
@@ -62,6 +62,28 @@ RSpec.describe ReportingClient::Events do
 
     it 'adds each persistently uniquely and once' do
       is_expected.to contain_exactly event1, event2, event3
+    end
+  end
+
+  describe '.register_events_from_registry_csv' do
+    before do
+      ReportingClient.configuration.registry_csv_path = ReportingClient.root.join('spec/support/custom_events.csv')
+      ReportingClient::Events.events = []
+    end
+
+    it 'loads events from the csv configured in registry_csv_path' do
+      described_class.register_events_from_registry_csv
+      expect(described_class.events).to eql %w[DoStuff FindSynergies]
+    end
+
+    context 'when registry_csv_path is not configured' do
+      before do
+        ReportingClient.configuration.registry_csv_path = nil
+      end
+
+      it 'raises a MissingRegistryCsvPath exception' do
+        expect { described_class.register_events_from_registry_csv }.to raise_error(ReportingClient::Exceptions::MissingRegistryCsvPath)
+      end
     end
   end
 

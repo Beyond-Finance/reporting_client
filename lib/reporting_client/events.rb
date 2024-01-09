@@ -2,6 +2,7 @@
 
 require 'active_support'
 require 'rubygems'
+require 'csv'
 
 require_relative 'event'
 
@@ -21,6 +22,15 @@ module ReportingClient
 
         events << event_name
         subscribe(instrumentable_name(event_name))
+      end
+
+      def register_events_from_registry_csv
+        raise ReportingClient::Exceptions::MissingRegistryCsvPath if ReportingClient.configuration.registry_csv_path.blank?
+
+        documented_custom_events = CSV.read(ReportingClient.configuration.registry_csv_path, headers: true)
+        documented_custom_events.each do |event|
+          register(event['event_name'])
+        end
       end
 
       def subscribe(event_name)

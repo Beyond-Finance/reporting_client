@@ -3,7 +3,7 @@ version: 2
 
 references:
   default_docker_ruby_executor: &default_docker_ruby_executor
-    image: circleci/ruby:2.7.1-node-browsers
+    image: cimg/ruby:3.3.0
     environment:
       BUNDLE_PATH: vendor/bundle
       RAILS_ENV: test
