@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_relative '../../lib/reporting_client/exception_serializer'
 
 RSpec.describe ExceptionSerializer do
   let(:error) { StandardError.new('test') }
