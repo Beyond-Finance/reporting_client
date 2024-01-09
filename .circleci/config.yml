@@ -27,7 +27,7 @@ jobs:
       - run:
           name: Bundle Install
           command: |
-            gem install bundler
+            gem install bundler -v 2.4.22
             bundle check || bundle install
       - save_cache:
           key: reporting_client-{{ checksum "reporting_client.gemspec" }}
