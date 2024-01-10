@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'json/add/exception'
-
 module ReportingClient
   class ExceptionSerializer < ActiveJob::Serializers::ObjectSerializer
     def serialize?(argument)
@@ -9,11 +7,17 @@ module ReportingClient
     end
 
     def serialize(exception)
-      exception.as_json
+      {
+        JSON.create_id => exception.class.name,
+        'm' => exception.message,
+        'b' => exception.backtrace
+      }
     end
 
     def deserialize(hash)
-      hash['json_class'].constantize.json_create(hash)
+      result = hash['json_class'].constantize.new(hash['m'])
+      result.set_backtrace hash['b']
+      result
     end
   end
 end
