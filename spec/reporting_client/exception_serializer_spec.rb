@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe ReportingClient::ExceptionSerializer do
   let(:error) { StandardError.new('test') }
   it 'serializes a StandardError' do
-    expect(ReportingClient::ExceptionSerializer.serialize(error)['message']).to eq('test')
+    expect(ReportingClient::ExceptionSerializer.serialize(error)['m']).to eq('test')
   end
 
   it 'deserializes a StandardError' do
