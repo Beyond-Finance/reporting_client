@@ -1,5 +1,6 @@
 # frozen_string_literal: true
-require "json/add/exception"
+
+require 'json/add/exception'
 
 module ReportingClient
   class ExceptionSerializer < ActiveJob::Serializers::ObjectSerializer

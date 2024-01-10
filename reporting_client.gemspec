@@ -31,8 +31,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'webmock'
 
   spec.add_runtime_dependency 'activejob'
-  spec.add_runtime_dependency 'json'
   spec.add_runtime_dependency 'faraday', '>= 2.0'
+  spec.add_runtime_dependency 'json'
   spec.add_runtime_dependency 'request_store'
   spec.metadata['rubygems_mfa_required'] = 'true'
 end
