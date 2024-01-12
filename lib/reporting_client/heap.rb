@@ -3,6 +3,7 @@
 require 'faraday'
 require 'json'
 require_relative 'noop_logger'
+require_relative './heap_job'
 
 module ReportingClient
   class Heap
@@ -21,6 +22,14 @@ module ReportingClient
     end
 
     def call
+      if config.heap_async
+        HeapJob.perform_later(event_name, identity, properties)
+      else
+        track
+      end
+    end
+
+    def track
       response = conn.post do |req|
         req.body = body
         req.options[:timeout] = config.timeout

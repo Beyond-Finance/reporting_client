@@ -8,6 +8,8 @@ require 'reporting_client/events'
 require 'reporting_client/heap'
 require 'reporting_client/dsl'
 require 'reporting_client/version'
+require 'reporting_client/heap_job'
+require 'reporting_client/exception_serializer'
 
 module ReportingClient
   class << self
