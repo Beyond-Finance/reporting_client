@@ -51,8 +51,10 @@ RSpec.describe ReportingClient::Heap do
   context 'with heap async set to true' do
     it 'enqueues a heap job' do
       allow(config).to receive(:heap_async).and_return(true)
+      timestamp = Time.now
+      expect(Time).to receive(:now).and_return(timestamp)
 
-      expect(ReportingClient::HeapJob).to receive(:perform_later).with(event_name, program_name, properties)
+      expect(ReportingClient::HeapJob).to receive(:perform_later).with(event_name, program_name, properties, timestamp.iso8601)
       expect(Faraday).not_to receive(:new)
       subject
     end

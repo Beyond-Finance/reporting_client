@@ -7,7 +7,7 @@ require_relative './heap_job'
 
 module ReportingClient
   class Heap
-    attr_accessor :event_name, :properties, :identity
+    attr_accessor :event_name, :properties, :identity, :timestamp
 
     HEAP_EVENT_TRACKING_URL = 'https://heapanalytics.com/api/track'
 
@@ -15,15 +15,16 @@ module ReportingClient
       new(**args).call
     end
 
-    def initialize(event_name:, identity:, properties:)
+    def initialize(event_name:, identity:, properties:, timestamp: Time.now.iso8601)
       @event_name = event_name
       @identity = identity
       @properties = properties
+      @timestamp = timestamp
     end
 
     def call
       if config.heap_async
-        HeapJob.perform_later(event_name, identity, properties)
+        HeapJob.perform_later(event_name, identity, properties, timestamp)
       else
         track
       end
@@ -56,7 +57,7 @@ module ReportingClient
       { app_id: config.heap_app_id,
         identity: identity,
         event: event_name,
-        timestamp: Time.now.iso8601,
+        timestamp: timestamp || Time.now.iso8601,
         properties: properties.transform_keys(&:to_sym) }
     end
 
