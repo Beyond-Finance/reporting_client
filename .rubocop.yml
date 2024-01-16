@@ -1,5 +1,5 @@
 AllCops:
-  TargetRubyVersion: 2.5
+  TargetRubyVersion: 3.2
   NewCops: enable
   Exclude:
     - 'bin/**/*'
@@ -42,4 +42,7 @@ Style/RegexpLiteral:
   EnforcedStyle: percent_r
 
 Style/GuardClause:
+  Enabled: false
+
+Style/HashSyntax:
   Enabled: false
