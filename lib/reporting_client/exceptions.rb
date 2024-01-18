@@ -2,6 +2,8 @@
 
 module ReportingClient
   module Exceptions
+    MissingRegistryCsvPath = StandardError.new
+
     class UnregisteredEventError < StandardError
       attr_reader :event_name
 
@@ -10,7 +12,7 @@ module ReportingClient
         must be registered prior to attempting to instrument them so that they are successfully
         dispatched to the appropriate services.
 
-        In order to register an event type, call `ReportingClient::Events.register(your_event_name)`.
+        In order to register an event type, add your event to the csv configured under `registry_csv_path`.
         This action is idemptotent, and it can be run multiple times for safety. You can disable
         this error by configuring `raises_on_unsupported_event` to be false.
       MESSAGE
