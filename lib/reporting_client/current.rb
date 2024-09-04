@@ -32,6 +32,8 @@ module ReportingClient
       end
     end
 
-    public :assign_attributes
+    def assign_attributes(new_attributes)
+      new_attributes.each { |key, value| public_send("#{key}=", value) }
+    end
   end
 end
