@@ -1,6 +1,8 @@
 # Reporting Client
  Contains a framework for sending custom events to APM tools
 
+[![codecov](https://codecov.io/gh/Beyond-Finance/reporting_client/graph/badge.svg?token=TCIWAISMXD)](https://codecov.io/gh/Beyond-Finance/reporting_client)
+
 ## Installing
 
 Add the following line to your Gemfile:

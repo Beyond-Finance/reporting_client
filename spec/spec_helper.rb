@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
 require 'simplecov'
+require 'simplecov-cobertura'
 
 SimpleCov.start 'rails' do
   add_filter '/spec'
   add_filter '/lib/reporting_client/version'
   add_filter '/lib/generators'
+
+  formatter SimpleCov::Formatter::CoberturaFormatter
 end
 
 require 'bundler/setup'
